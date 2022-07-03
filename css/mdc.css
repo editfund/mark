@@ -1,0 +1,49 @@
+:root {
+  --mdc-theme-primary: #9c27b0;
+  --mdc-theme-secondary: #ffab40;
+  --mdc-theme-background: #fff;
+}
+
+.mdc-select-width-class{
+  width: 100%;
+}
+
+
+
+.app-fab--cm {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+}
+@media (min-width: 1024px) {
+  .app-fab--cm {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+}
+
+.app-fab--cy {
+  position: fixed;
+  bottom: 1rem;
+  right: 6rem;
+}
+@media (min-width: 1024px) {
+  .app-fab--cy {
+    bottom: 1.5rem;
+    right: 6.5rem;
+  }
+}
+
+.app-fab--undo {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  opacity: 0;
+}
+@media (min-width: 1024px) {
+  .app-fab--undo {
+    bottom: 1.5rem;
+    left: 1.5rem;
+    opacity: 0;
+  }
+}

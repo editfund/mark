@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/x-icon" href="./favicon.svg" sizes="any">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1" />
+  <!-- material-components-web.min.css放在material-icons.css前面，否则FAB位置异常 -->
+  <link rel='stylesheet' href='https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css' />
+  <!-- ./css-1rd -->
+  <link href="./css/main.css" rel="stylesheet" />
+  <link href="./css/mdc.css" rel="stylesheet" />
+  <!-- ./css-3rd -->
+  <link rel="stylesheet" href="https://unpkg.com/material-icons@1.11.1/iconfont/material-icons.css" />
+
+  <!-- pickr One of the following themes -->
+  <link rel="stylesheet" href="https://unpkg.com/@simonwep/pickr@1.8.2/dist/themes/classic.min.css" />
+  <!-- 'classic' theme -->
+  <link rel="stylesheet" href="https://unpkg.com/@simonwep/pickr@1.8.2/dist/themes/monolith.min.css" />
+  <!-- 'monolith' theme -->
+  <link rel="stylesheet" href="https://unpkg.com/@simonwep/pickr@1.8.2/dist/themes/nano.min.css" />
+  <!-- 'nano' theme -->
+
+  <!-- TUI-Editor CSS -->
+  <link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+  <!-- TUI-Editor Plugin CSS-->
+  <link rel="stylesheet"
+    href="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight.min.css" />
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui-color-picker/v2.2.7/tui-color-picker.css" />
+  <link rel="stylesheet"
+    href="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.css" />
+
+  <!-- TUI-Editor Plugin 语法高亮CSS-->
+  <link rel="stylesheet" href="https://unpkg.com/prismjs@1.28.0/themes/prism.min.css" />
+  <!-- TUI-Editor Plugin 数学公式CSS-->
+  <link rel="stylesheet" href="https://unpkg.com/katex@0.15.6/dist/katex.min.css" />
+
+  <!-- For loading external data files -->
+  <script src="https://cdn.polyfill.io/v3/polyfill.min.js?features=Promise,fetch"></script>
+
+  <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+
+</head>
+
+<body>
+  <!-- 打开文件-->
+  <input type="file" id="openFileDialog-JSON" style="display: none" />
+  <!-- 打开图片文件-->
+  <input type="file" id="openFileDialog-Img" style="display: none" />
+
+  <div style="display: none">
+    <div id="pickr1" class="pickr"></div>
+  </div>
+
+  <div id="cy"></div>
+
+  <!-- md编辑器-->
+  <div id="md-editor"></div>
+
+  <div id="div-mdc-fab">
+    <!-- 连线编辑模式-->
+    <button id="fab-1" class="mdc-fab app-fab--cm" aria-label="code">
+      <span class="material-icons mdc-fab__icon">switch_access_shortcut_add</span>
+    </button>
+
+    <button id="fab-2" class="mdc-fab app-fab--cy" aria-label="cy">
+      <span class="material-icons mdc-fab__icon">add_circle</span>
+    </button>
+
+    <button id="fab-3" class="mdc-fab app-fab--undo" aria-label="cy">
+      <span class="material-icons mdc-fab__icon">undo</span>
+    </button>
+  </div>
+
+  <!-- 节点属性对话框 -->
+  <div class="mdc-dialog" id="mdc-dialog--node-property">
+    <div class="mdc-dialog__container">
+      <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="my-dialog-title"
+        aria-describedby="my-dialog-content">
+        <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+        <h2 class="mdc-dialog__title" id="my-dialog-title">
+          节点属性
+        </h2>
+        <div class="mdc-dialog__content" id="my-dialog-content">
+          <h4>elements</h4>
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">data.id(不可修改)</span>
+            <input id="data-id" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="data.id">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">data.name</span>
+            <input id="data-name" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="name">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+          <!-- data.parent(留待后续) -->
+
+          <!-- position.x -->
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">position.x</span>
+            <input id="position-x" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="200">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">position.y</span>
+            <input id="position-y" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="200">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+          <!-- group -->
+
+          <!-- selectable -->
+
+          <!-- locked -->
+
+          <!-- grabbable -->
+
+          <!-- pannable -->
+
+          <h4>style</h4>
+          <!-- 节点形状选择 -->
+          <div id="select1" class="mdc-select mdc-select--filled mdc-select-width-class">
+            <div class="mdc-select__anchor" role="button" aria-haspopup="listbox" aria-expanded="false"
+              aria-labelledby="demo-label demo-selected-text">
+              <span class="mdc-select__ripple"></span>
+              <span id="demo-label" class="mdc-floating-label">形状选择</span>
+              <span class="mdc-select__selected-text-container">
+                <span id="demo-selected-text" class="mdc-select__selected-text"></span>
+              </span>
+              <span class="mdc-select__dropdown-icon">
+                <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">
+                  <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                    points="7 10 12 15 17 10">
+                  </polygon>
+                  <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                    points="7 15 12 10 17 15">
+                  </polygon>
+                </svg>
+              </span>
+              <span class="mdc-line-ripple"></span>
+            </div>
+            <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+              <ul class="mdc-deprecated-list" role="listbox" aria-label="Food picker listbox">
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--selected" aria-selected="true"
+                  data-value="" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="ellipse" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    ellipse
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--disabled" aria-selected="false"
+                  data-value="triangle" aria-disabled="true" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    triangle
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="round-triangle" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    round-triangle
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="rectangle" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    rectangle
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="round-rectangle" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    round-rectangle
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="cut-rectangle" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    cut-rectangle
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="diamond" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    diamond
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="star" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    star
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- width -->
+          <div id="select2" class="mdc-select mdc-select--filled mdc-select-width-class">
+            <div class="mdc-select__anchor" role="button" aria-haspopup="listbox" aria-expanded="false"
+              aria-labelledby="demo-label demo-selected-text">
+              <span class="mdc-select__ripple"></span>
+              <span id="demo-label" class="mdc-floating-label">宽度</span>
+              <span class="mdc-select__selected-text-container">
+                <span id="demo-selected-text" class="mdc-select__selected-text"></span>
+              </span>
+              <span class="mdc-select__dropdown-icon">
+                <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">
+                  <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                    points="7 10 12 15 17 10">
+                  </polygon>
+                  <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                    points="7 15 12 10 17 15">
+                  </polygon>
+                </svg>
+              </span>
+              <span class="mdc-line-ripple"></span>
+            </div>
+            <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+              <ul class="mdc-deprecated-list" role="listbox" aria-label="Food picker listbox">
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--selected" aria-selected="true"
+                  data-value="" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="64" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    64
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--disabled" aria-selected="false"
+                  data-value="128" aria-disabled="true" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    128
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="256" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    256
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="512" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    512
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- height -->
+          <div id="select3" class="mdc-select mdc-select--filled mdc-select-width-class">
+            <div class="mdc-select__anchor" role="button" aria-haspopup="listbox" aria-expanded="false"
+              aria-labelledby="demo-label demo-selected-text">
+              <span class="mdc-select__ripple"></span>
+              <span id="demo-label" class="mdc-floating-label">高度</span>
+              <span class="mdc-select__selected-text-container">
+                <span id="demo-selected-text" class="mdc-select__selected-text"></span>
+              </span>
+              <span class="mdc-select__dropdown-icon">
+                <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">
+                  <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                    points="7 10 12 15 17 10">
+                  </polygon>
+                  <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                    points="7 15 12 10 17 15">
+                  </polygon>
+                </svg>
+              </span>
+              <span class="mdc-line-ripple"></span>
+            </div>
+            <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+              <ul class="mdc-deprecated-list" role="listbox" aria-label="Food picker listbox">
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--selected" aria-selected="true"
+                  data-value="" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="64" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    64
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--disabled" aria-selected="false"
+                  data-value="128" aria-disabled="true" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    128
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="256" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    256
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="512" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    512
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- 透明度 -->
+          <div id="select4" class="mdc-select mdc-select--filled mdc-select-width-class">
+            <div class="mdc-select__anchor" role="button" aria-haspopup="listbox" aria-expanded="false"
+              aria-labelledby="demo-label demo-selected-text">
+              <span class="mdc-select__ripple"></span>
+              <span id="demo-label" class="mdc-floating-label">透明度</span>
+              <span class="mdc-select__selected-text-container">
+                <span id="demo-selected-text" class="mdc-select__selected-text"></span>
+              </span>
+              <span class="mdc-select__dropdown-icon">
+                <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">
+                  <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                    points="7 10 12 15 17 10">
+                  </polygon>
+                  <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                    points="7 15 12 10 17 15">
+                  </polygon>
+                </svg>
+              </span>
+              <span class="mdc-line-ripple"></span>
+            </div>
+            <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+              <ul class="mdc-deprecated-list" role="listbox" aria-label="Food picker listbox">
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--selected" aria-selected="true"
+                  data-value="" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="1" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    1
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--disabled" aria-selected="false"
+                  data-value="0.8" aria-disabled="true" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    0.8
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="0.6" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    0.6
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="0.4" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    0.4
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="0.2" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    0.2
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+        <div class="mdc-dialog__actions">
+          <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">取消</span>
+          </button>
+          <button id="node-properties-accept" type="button" class="mdc-button mdc-dialog__button"
+            data-mdc-dialog-action="accept">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">确定</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+  </div>
+
+  <!-- 连线属性对话框 -->
+  <div class="mdc-dialog" id="mdc-dialog--edge-property">
+    <div class="mdc-dialog__container">
+      <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="my-dialog-title"
+        aria-describedby="my-dialog-content">
+        <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+        <h2 class="mdc-dialog__title" id="my-dialog-title">
+          连线属性
+        </h2>
+        <div class="mdc-dialog__content" id="my-dialog-content">
+          <h4>elements</h4>
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">data.id(不可修改)</span>
+            <input id="edge-data-id" type="text" class="mdc-text-field__input" aria-labelledby="my-label"
+              value="data.id">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">data.name</span>
+            <input id="edge-data-name" type="text" class="mdc-text-field__input" aria-labelledby="my-label"
+              value="name">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+          <!-- source -->
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">edge-source</span>
+            <input id="edge-source" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="200">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">edge-target</span>
+            <input id="edge-target" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="200">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+          <h4>style</h4>
+          <!-- 线宽 -->
+          <div id="select5" class="mdc-select mdc-select--filled mdc-select-width-class">
+            <div class="mdc-select__anchor" role="button" aria-haspopup="listbox" aria-expanded="false"
+              aria-labelledby="demo-label demo-selected-text">
+              <span class="mdc-select__ripple"></span>
+              <span id="demo-label" class="mdc-floating-label">线宽</span>
+              <span class="mdc-select__selected-text-container">
+                <span id="demo-selected-text" class="mdc-select__selected-text"></span>
+              </span>
+              <span class="mdc-select__dropdown-icon">
+                <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5" focusable="false">
+                  <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                    points="7 10 12 15 17 10">
+                  </polygon>
+                  <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                    points="7 15 12 10 17 15">
+                  </polygon>
+                </svg>
+              </span>
+              <span class="mdc-line-ripple"></span>
+            </div>
+            <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+              <ul class="mdc-deprecated-list" role="listbox" aria-label="Food picker listbox">
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--selected" aria-selected="true"
+                  data-value="" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="1" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    1
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item mdc-deprecated-list-item--disabled" aria-selected="false"
+                  data-value="2" aria-disabled="true" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    2
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="3" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    3
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="4" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    4
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="5" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    5
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="6" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    6
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="7" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    7
+                  </span>
+                </li>
+                <li class="mdc-deprecated-list-item" aria-selected="false" data-value="8" role="option">
+                  <span class="mdc-deprecated-list-item__ripple"></span>
+                  <span class="mdc-deprecated-list-item__text">
+                    8
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- 透明度 -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">opacity</span>
+            <input id="cy-edge-opacity" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="1">
+            <span class="mdc-line-ripple"></span>
+          </label>
+
+        </div>
+        <div class="mdc-dialog__actions">
+          <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">取消</span>
+          </button>
+          <button id="edge-properties-accept" type="button" class="mdc-button mdc-dialog__button"
+            data-mdc-dialog-action="accept">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">确定</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+  </div>
+
+  <!-- 许可证对话框 -->
+  <div class="mdc-dialog" id="mdc-dialog--licensed">
+    <div class="mdc-dialog__container">
+      <div class="mdc-dialog__surface" role="alertdialog" aria-modal="true" aria-labelledby="my-dialog-title"
+        aria-describedby="my-dialog-content">
+        <!-- Title cannot contain leading whitespace due to mdc-typography-baseline-top() -->
+        <h2 class="mdc-dialog__title" id="my-dialog-title">
+          许可证
+        </h2>
+        <div class="mdc-dialog__content" id="my-dialog-content">
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">序列号</span>
+            <input id="input-sn" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="">
+            <span class="mdc-line-ripple"></span>
+          </label>
+          <!-- Render textfield component -->
+          <label class="mdc-text-field mdc-text-field--filled" style="width: 100%;">
+            <span class="mdc-text-field__ripple"></span>
+            <span class="mdc-floating-label mdc-floating-label--float-above" id="my-label">许可证</span>
+            <input id="input-licensed" type="text" class="mdc-text-field__input" aria-labelledby="my-label" value="">
+            <span class="mdc-line-ripple"></span>
+          </label>
+          <p>开启保存功能，需要联系founder@edit.fund获得许可证。</p>
+          <p id="licensed-result"></p>
+        </div>
+        <div class="mdc-dialog__actions">
+          <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="close">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">取消</span>
+          </button>
+          <button id="licensed-accept" type="button" class="mdc-button mdc-dialog__button">
+            <div class="mdc-button__ripple"></div>
+            <span class="mdc-button__label">确定</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="mdc-dialog__scrim"></div>
+  </div>
+
+  <script src='https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js'></script>
+  <!--cytoscape-->
+  <script src="https://unpkg.com/cytoscape@3.21.1/dist/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/cytoscape-cxtmenu@3.4.0/cytoscape-cxtmenu.js"></script>
+  <script src="https://unpkg.com/lodash@4.17.21/lodash.min.js"></script>
+  <script src="https://unpkg.com/cytoscape-edgehandles@4.0.1/cytoscape-edgehandles.js"></script>
+
+  <!-- TUI-Editor JS -->
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+  <!-- TUI-Editor Plugin JS -->
+  <script
+    src="https://uicdn.toast.com/editor-plugin-code-syntax-highlight/latest/toastui-editor-plugin-code-syntax-highlight-all.min.js">
+    </script>
+
+  <script src="https://uicdn.toast.com/tui-color-picker/v2.2.7/tui-color-picker.min.js"></script>
+
+  <script src="https://uicdn.toast.com/editor-plugin-color-syntax/latest/toastui-editor-plugin-color-syntax.min.js">
+  </script>
+
+  <!-- misc JS -->
+  <script src="https://unpkg.com/latex.js@0.12.4/dist/latex.js"></script>
+  <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="https://unpkg.com/dexie@3.2.2/dist/dexie.min.js"></script>
+  <script src="https://unpkg.com/blueimp-md5@2.19.0/js/md5.js"></script>
+  <script src="https://openfpcdn.io/fingerprintjs/v3/iife.min.js"></script>
+  <script src="https://unpkg.com/js-base64@3.7.2/base64.js"></script>
+  <script src="https://unpkg.com/@simonwep/pickr@1.8.2/dist/pickr.min.js"></script>
+</body>
+
+<!-- js-1rd -->
+<script src="./register-sw.js"></script>
+<!-- Load application code at the end to ensure DOM is loaded -->
+<script src="./mjs/main.js" type="module"></script>
+<script src="./mjs/mdc.js" type="module"></script>
+<script src="./mjs/pickr.js" type="module"></script>
+
+</html>

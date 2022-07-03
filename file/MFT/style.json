@@ -1,0 +1,27 @@
+[{
+    "selector": "node",
+    "style": {
+        "label": "data(id)"
+    }
+}, {
+    "selector": "#n1",
+    "style": {
+        "background-color": "rgb(255,0,0)",
+        "opacity": "0.3"
+    }
+}, {
+    "selector": "#n2",
+    "style": {
+        "shape": "rectangle",
+        "background-color": "rgb(0,128,0)",
+        "opacity": "0.3",
+        "width": "120px",
+        "height": "60px"
+    }
+}, {
+    "selector": "#n3",
+    "style": {
+        "background-color": "rgb(0,0,255)",
+        "opacity": "0.3"
+    }
+}]

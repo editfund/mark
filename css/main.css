@@ -1,0 +1,35 @@
+@import "misc.css";
+@import "cy.css";
+
+#body::-webkit-scrollbar {
+  display: none;
+}
+
+#cy::-webkit-scrollbar {
+  display: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  font-family: helvetica, sans-serif;
+  font-size: 14px; 
+  margin: 0px;
+  /* overflow: hidden;  */
+}
+
+#cy {
+  position: absolute;
+  width: 200vw;
+  height: 200vh;
+  z-index: 2;
+  left: 0px;
+  top: 0px;
+  opacity: 1;
+}
+
+#div-mdc-fab {
+  position: absolute;
+  z-index: 3;
+}

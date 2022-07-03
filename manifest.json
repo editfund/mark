@@ -1,0 +1,84 @@
+{
+    "short_name": "CY-MD",
+    "name": "CY-MD",
+    "icons": [
+        {
+            "src": "./favicon.svg",
+            "type": "image/svg",
+            "sizes": "192x192"
+        },
+        {
+            "src": "./favicon.svg",
+            "type": "image/svg",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "./",
+    "background_color": "#6200ed",
+    "display": "standalone",
+    "scope": "./",
+    "theme_color": "#F200ed",
+    "shortcuts": [
+        {
+            "name": "CY-MD",
+            "short_name": "CY-MD",
+            "description": "CY-MD",
+            "url": "./",
+            "icons": [
+                {
+                    "src": "./favicon.svg",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ],
+    "description": "CY-MD",
+    "file_handlers": [
+        {
+            "action": "./index.html",
+            "accept": {
+                "text/plain": [
+                    ".index"
+                ]
+            }
+        },
+        {
+            "action": "./index.html",
+            "accept": {
+                "text/plain": [
+                    ".md"
+                ]
+            },
+            "icons": [
+                {
+                    "src": "./favicon.svg",
+                    "type": "image/svg",
+                    "sizes": "192x192"
+                },
+                {
+                    "src": "./favicon.svg",
+                    "type": "image/svg",
+                    "sizes": "512x512"
+                }
+            ]
+        },
+        {
+            "action": "./index.html",
+            "accept": {
+                "application/vnd.cy+json": [
+                    ".cy",
+                    ".json"
+                ]
+            }
+        },
+        {
+            "action": "./index.html",
+            "accept": {
+                "application/vnd.cy+xml": [
+                    ".drawio",
+                    ".xml"
+                ]
+            }
+        }
+    ]
+}
