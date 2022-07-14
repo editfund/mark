@@ -8,27 +8,25 @@
   width: 100%;
 }
 
-
-
-.app-fab--cm {
+.app-fab--add-edge {
   position: fixed;
   bottom: 1rem;
   right: 1rem;
 }
 @media (min-width: 1024px) {
-  .app-fab--cm {
+  .app-fab--add-edge {
     bottom: 1.5rem;
     right: 1.5rem;
   }
 }
 
-.app-fab--cy {
+.app-fab--add-node {
   position: fixed;
   bottom: 1rem;
   right: 6rem;
 }
 @media (min-width: 1024px) {
-  .app-fab--cy {
+  .app-fab--add-node {
     bottom: 1.5rem;
     right: 6.5rem;
   }
@@ -44,6 +42,65 @@
   .app-fab--undo {
     bottom: 1.5rem;
     left: 1.5rem;
+    opacity: 0;
+  }
+}
+
+.app-fab-md--undo {
+  position: fixed;
+  bottom: 0px;
+  left: 4vw;
+  opacity: 0;
+}
+@media (min-width: 1024px) {
+  .app-fab-md--undo {
+    bottom: 0px;
+    left: 4vw;
+    opacity: 0;
+  }
+}
+
+.app-fab-md--redo {
+  position: fixed;
+  bottom: 0px;
+  left: calc(4vw + 64px);
+  /* 需要注意的是，运算符前后都需要保留一个空格 */
+  opacity: 0;
+}
+@media (min-width: 1024px) {
+  .app-fab-md--redo {
+    bottom: 0px;
+    left: calc(4vw + 64px);
+    opacity: 0;
+  }
+}
+
+.app-fab-md--bold {
+  position: fixed;
+  bottom: 64px;
+  left: calc(4vw);
+  /* 需要注意的是，运算符前后都需要保留一个空格 */
+  opacity: 0;
+}
+@media (min-width: 1024px) {
+  .app-fab-md--bold {
+    bottom: 64px;
+    left: calc(4vw);
+    opacity: 0;
+  }
+}
+
+.app-fab-md--italic {
+  position: fixed;
+  bottom: 64px;
+  left: calc(4vw + 64px);
+  /* 需要注意的是，运算符前后都需要保留一个空格 */
+  opacity: 0;
+}
+@media (min-width: 1024px) {
+  .app-fab-md--italic{
+    bottom: 64px;
+    left: calc(4vw + 64px);
     opacity: 0;
   }
 }

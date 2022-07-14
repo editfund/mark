@@ -33,3 +33,8 @@ body {
   position: absolute;
   z-index: 3;
 }
+
+#div-mdc-fab-md {
+  position: absolute;
+  z-index: 9;
+}
