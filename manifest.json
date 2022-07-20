@@ -1,6 +1,6 @@
 {
-    "short_name": "CY-MD",
-    "name": "CY-MD",
+    "short_name": "Mark",
+    "name": "Mark.Edit.Fund",
     "icons": [
         {
             "src": "./favicon.svg",
@@ -20,9 +20,9 @@
     "theme_color": "#F200ed",
     "shortcuts": [
         {
-            "name": "CY-MD",
-            "short_name": "CY-MD",
-            "description": "CY-MD",
+            "name": "Mark.Edit.Fund",
+            "short_name": "Mark",
+            "description": "Mark.Edit.Fund",
             "url": "./",
             "icons": [
                 {
@@ -32,7 +32,7 @@
             ]
         }
     ],
-    "description": "CY-MD",
+    "description": "Mark.Edit.Fund",
     "file_handlers": [
         {
             "action": "./index.html",
